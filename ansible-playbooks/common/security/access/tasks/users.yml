@@ -1,0 +1,69 @@
+---
+  - name: Creating adduser.conf
+    file:
+      path: "/etc/adduser.conf"
+      state: touch
+
+  - name: Ensure user home directory permissions are restrictive
+    lineinfile:
+      dest: /etc/adduser.conf
+      regexp: "^DIR_MODE=0755"
+      line: "DIR_MODE=0750"
+      state: present
+
+  - name: Creating bash.bashrc
+    file:
+      path: "/etc/bash.bashrc"
+      state: touch
+
+  - name: Ensure automatic logout | 15 mins inactivity | Default umask
+    lineinfile:
+      dest: /etc/profile
+      insertafter: EOF
+      line: '{{ item }}'
+    with_items:
+      - 'TMOUT=900'
+      - 'readonly TMOUT'
+      - 'export TMOUT'
+      - 'umask 027'
+
+  - name: Add Default umask to bashrc
+    lineinfile:
+      dest: /etc/bash.bashrc
+      insertafter: EOF
+      line: 'umask 027'
+
+  - name: Create engineer user accounts
+    user:
+      name: '{{ item }}'
+      state: present
+      groups: wheel
+      shell: /bin/bash
+    with_items:
+      - '{{ users.devops }}'
+      - '{{ users.dev }}'
+
+  - name: Copy ssh keys for engineer user accounts
+    authorized_key:
+      user: '{{ item }}'
+      key: "{{ lookup('file','public_keys/'+item) }}"
+    with_items:
+      - '{{ users.devops }}'
+      - '{{ users.dev }}'
+
+  - name: Ensure passwordless-sudo file exists
+    file:
+      dest: /etc/sudoers.d/passwordless-sudo
+      state: touch
+      owner: root
+      group: root
+      mode: 0440
+
+  - name: Allow passwordless sudo for production engineer users
+    lineinfile:
+      dest: /etc/sudoers.d/passwordless-sudo
+      state: present
+      line: '{{ item }} ALL=(ALL) NOPASSWD:ALL'
+    with_items:
+      - '{{ users.devops }}'
+      - '{{ users.dev }}'

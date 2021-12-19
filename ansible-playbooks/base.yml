@@ -1,0 +1,11 @@
+---
+  - hosts: localhost
+    become: yes
+    become_method: sudo
+    vars:
+      ansible_ssh_user: centos
+      env: '{{ aws_vpc }}'
+      vpc: '{{ aws_vpc }}'
+    roles:
+      - common/security/access
+      - common/packages

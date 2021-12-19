@@ -1,0 +1,63 @@
+{
+    "description": "Builds CentOS 7 AMI",
+    "variables": {
+        "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+        "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+        "aws_account_id": "{{env `AWS_ACCOUNT_ID`}}",
+        "os_name": "centos",
+        "os_version": "7",
+        "aws_vpc_id": "{{env `AWS_VPC_ID`}}",
+        "packer_sg_id": "{{env `PACKER_SG_ID`}}",
+        "packer_subnet_id": "{{env `PACKER_SUBNET_ID`}}",
+        "instance_mode": "stand-alone"
+    },
+    "builders": [
+        {
+            "type": "amazon-ebs",
+            "access_key": "{{user `aws_access_key`}}",
+            "secret_key": "{{user `aws_secret_key`}}",
+            "region": "ap-south-1",
+            "source_ami": "ami-0ffc7af9c06de0077",
+            "instance_type": "t2.medium",
+            "communicator": "ssh",
+            "ssh_username": "centos",
+            "ami_name": "{{user `os_name`}}-base-{{isotime \"2006-01-02-030405\"}}",
+            "security_group_ids": [
+                "{{user `packer_sg_id`}}"
+            ],
+            "vpc_id": "{{user `aws_vpc_id`}}",
+            "subnet_id": "{{user `packer_subnet_id`}}",
+            "encrypt_boot": "true",
+            "tags": {
+                "OS_Name": "{{user `os_name`}}",
+                "OS_Version": "{{user `os_version`}}",
+                "Name": "{{user `os_name`}}-mpos-base-{{user `instance_mode`}}",
+                "Latest": "{{user `os_name`}}-mpos-base-{{user `instance_mode`}}",
+                "Vpc": "{{user `aws_vpc`}}",
+                "BU": "devops"
+            }
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "shell",
+            "inline": [
+                "sleep 5",
+                "sudo yum update -y",
+                "sudo yum install -y wget",
+                "sudo yum install -y epel-release",
+                "sudo yum repolist",
+                "sudo yum install -y ansible"
+            ]
+        },
+        {
+            "type": "ansible-local",
+            "playbook_dir": "./ansible-playbooks",
+            "playbook_file": "./ansible-playbooks/base.yml",
+            "extra_arguments": [
+                "--extra-vars",
+                "\"vpc={{user `aws_vpc`}}\""
+            ]
+        }
+    ]
+}

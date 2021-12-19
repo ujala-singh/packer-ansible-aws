@@ -1,0 +1,13 @@
+---
+  - name: install SSM if REDHAT
+    shell: sudo yum install -y https://s3.amazonaws.com/ec2-downloads-windows/SSMAgent/latest/linux_amd64/amazon-ssm-agent.rpm
+
+  - name: enable amazon-ssm-agent
+    service: 
+      name: amazon-ssm-agent 
+      enabled: yes
+
+  - name: start amazon-ssm-agent
+    service:
+      name: amazon-ssm-agent
+      state: started
