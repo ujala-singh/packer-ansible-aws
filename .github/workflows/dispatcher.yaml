@@ -1,0 +1,19 @@
+name: Dispatcher
+on:
+  push:
+    branches: [main]
+
+jobs:
+  dispatch:
+    name: Dispatch
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repo: ['ujala-singh/Ubuntu-EC2-Module']
+    steps:
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.DISPATCH_TOKEN }}
+          repository: ${{ matrix.repo }}
+          event-type: trigger_workflow
