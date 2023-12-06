@@ -14,6 +14,12 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
         with:
-          token: ${{ secrets.DISPATCH_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ matrix.repo }}
           event-type: trigger_workflow
+          client-payload: |-
+            {
+              "repo": {
+                "name": "${{ github.repository }}"
+              }
+            }
