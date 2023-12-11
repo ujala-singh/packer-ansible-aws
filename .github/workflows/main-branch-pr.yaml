@@ -1,0 +1,36 @@
+name: Create Main Branch PR
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  create_main_branch_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create Main Branch PR
+        run: |
+          if [ "${{ github.event.pull_request.merged }}" = "true" ] && [ "${{ github.event.pull_request.base.ref }}" = "stage" ]; then
+            # Extract the PR number from the merged pull request
+            PR_NUMBER=$(echo "${{ github.event.pull_request.title }}" | grep -oP '^(\d+)')
+            
+            # Create a new branch for the main branch, including the PR number
+            git checkout -b main-branch-update-${PR_NUMBER}
+            
+            # Make changes or use the existing changes
+            
+            # Commit the changes, including the PR number in the commit message
+            git commit -am "Merge changes from 'stage' to 'main' (PR #$PR_NUMBER)"
+            
+            # Push the changes to the repository
+            git push origin main-branch-update-${PR_NUMBER}
+            
+            # Create a pull request with the PR number in the title
+            gh pr create --base main --head main-branch-update-${PR_NUMBER} --title "Merge changes from 'stage' to 'main' (PR #$PR_NUMBER)"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
