@@ -19,6 +19,9 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+      
+      - name: Fetch latest changes
+        run: git fetch origin master
 
       - name: Create Master Branch PR
         run: |
@@ -28,18 +31,16 @@ jobs:
             PR_NUMBER=${{ github.event.pull_request.number }}
             echo "PR_NUMBER: $PR_NUMBER"
 
-            # Fetch the 'master' branch from the remote repository
-            git fetch origin master
+            # Switch to the 'master' branch
+            git checkout master
             
             # Create a new branch for the master branch, including the PR number
             git checkout -b master-branch-update-from-stage-pr-${PR_NUMBER} origin/master
 
-            # Checkout the pull request changes using GitHub CLI
-            gh pr checkout $PR_NUMBER
-                        
-            # Commit the changes, including the PR number in the commit message
-            echo "Commiting the changes to branch master-branch-update-from-stage-pr-${PR_NUMBER}..."
-            git commit -am "Merge changes from 'stage' to 'master' (PR #$PR_NUMBER)"
+            # Fetch the changes from the closed pull request
+            echo "Fetching changes from PR #$PR_NUMBER..."
+            git fetch origin pull/${PR_NUMBER}/head:${PR_NUMBER}-pr-changes
+            git merge ${PR_NUMBER}-pr-changes
             
             # Push the changes to the repository
             echo "Pushing the changes to master-branch-update-from-stage-pr-${PR_NUMBER}..."
