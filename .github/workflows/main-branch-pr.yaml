@@ -27,13 +27,13 @@ jobs:
             # Extract the PR number from the merged pull request
             PR_NUMBER=${{ github.event.pull_request.number }}
             echo "PR_NUMBER: $PR_NUMBER"
+
+            # Switch to the 'main' branch
+            git checkout main
             
             # Create a new branch for the main branch, including the PR number
-            echo "Checking out to branch main-branch-update-${PR_NUMBER}..."
             git checkout -b main-branch-update-${PR_NUMBER}
-            
-            # Make changes or use the existing changes
-            
+                        
             # Commit the changes, including the PR number in the commit message
             echo "Commiting the changes to branch main-branch-update-${PR_NUMBER}..."
             git commit -am "Merge changes from 'stage' to 'main' (PR #$PR_NUMBER)"
