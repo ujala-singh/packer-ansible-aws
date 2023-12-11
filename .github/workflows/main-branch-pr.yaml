@@ -14,6 +14,11 @@ jobs:
 
       - name: Check GitHub CLI version
         run: gh --version
+      
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Create Main Branch PR
         run: |
@@ -42,5 +47,3 @@ jobs:
             gh pr create --base main --head main-branch-update-${PR_NUMBER} --title "Merge changes from 'stage' to 'main' (PR #$PR_NUMBER)"
           fi
           echo "Workflow completed successfully."
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
