@@ -1,4 +1,4 @@
-name: Create Main Branch PR
+name: Create Master Branch PR
 
 on:
   pull_request:
@@ -6,7 +6,7 @@ on:
       - closed
 
 jobs:
-  create_main_branch_pr:
+  create_master_branch_pr:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,7 +20,7 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Create Main Branch PR
+      - name: Create Master Branch PR
         run: |
           echo "Starting workflow..."
           if [ "${{ github.event.pull_request.merged }}" == "true" ] && [ "${{ github.event.pull_request.base.ref }}" == "stage" ]; then
@@ -28,22 +28,23 @@ jobs:
             PR_NUMBER=${{ github.event.pull_request.number }}
             echo "PR_NUMBER: $PR_NUMBER"
 
-            # Switch to the 'main' branch
-            git checkout master
+            # Fetch the 'master' branch from the remote repository
+            git fetch origin master
             
-            # Create a new branch for the main branch, including the PR number
-            git checkout -b main-branch-update-${PR_NUMBER}
+            # Create a new branch for the master branch, including the PR number
+            echo "Checking out to branch master-branch-update-${PR_NUMBER}..."
+            git checkout -b master-branch-update-${PR_NUMBER} origin/master
                         
             # Commit the changes, including the PR number in the commit message
-            echo "Commiting the changes to branch main-branch-update-${PR_NUMBER}..."
-            git commit -am "Merge changes from 'stage' to 'main' (PR #$PR_NUMBER)"
+            echo "Commiting the changes to branch master-branch-update-${PR_NUMBER}..."
+            git commit -am "Merge changes from 'stage' to 'master' (PR #$PR_NUMBER)"
             
             # Push the changes to the repository
-            echo "Pushing the changes to branch main-branch-update-${PR_NUMBER}..."
-            git push origin main-branch-update-${PR_NUMBER}
+            echo "Pushing the changes to branch master-branch-update-${PR_NUMBER}..."
+            git push origin master-branch-update-${PR_NUMBER}
             
             # Create a pull request with the PR number in the title
-            echo "Creating the PR to main branch with branch name as main-branch-update-${PR_NUMBER}..."
-            gh pr create --base main --head main-branch-update-${PR_NUMBER} --title "Merge changes from 'stage' to 'main' (PR #$PR_NUMBER)"
+            echo "Creating the PR to master branch with branch name as master-branch-update-${PR_NUMBER}..."
+            gh pr create --base master --head master-branch-update-${PR_NUMBER} --title "Merge changes from 'stage' to 'master' (PR #$PR_NUMBER)"
           fi
           echo "Workflow completed successfully."
