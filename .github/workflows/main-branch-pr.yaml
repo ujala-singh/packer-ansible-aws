@@ -32,7 +32,6 @@ jobs:
             git fetch origin master
             
             # Create a new branch for the master branch, including the PR number
-            echo "Checking out to branch master-branch-update-from-stage-pr-${PR_NUMBER}..."
             git checkout -b master-branch-update-from-stage-pr-${PR_NUMBER} origin/master
 
             # Checkout the pull request changes using GitHub CLI
@@ -51,3 +50,5 @@ jobs:
             gh pr create --base master --head master-branch-update-from-stage-pr-${PR_NUMBER} --title "Merge changes from 'stage' to 'master' (PR #$PR_NUMBER)"
           fi
           echo "Workflow completed successfully."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
