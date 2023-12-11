@@ -29,7 +29,7 @@ jobs:
             echo "PR_NUMBER: $PR_NUMBER"
 
             # Switch to the 'main' branch
-            git checkout main
+            git checkout master
             
             # Create a new branch for the main branch, including the PR number
             git checkout -b main-branch-update-${PR_NUMBER}
