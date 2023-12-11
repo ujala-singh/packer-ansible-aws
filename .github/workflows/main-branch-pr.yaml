@@ -18,9 +18,9 @@ jobs:
       - name: Create Main Branch PR
         run: |
           echo "Starting workflow..."
-          if [ "${{ github.event.pull_request.merged }}" == "true" ] && [ "${{ github.event.pull_request.base.ref }}" == "stage" ]; then
+          if [ "${{ github.event.pull_request.merged }}" == "true" && "${{ github.event.pull_request.base.ref }}" == "stage" ]; then
             # Extract the PR number from the merged pull request
-            PR_NUMBER=$(echo "${{ github.event.pull_request.title }}" | grep -oP '^(\d+)')
+            PR_NUMBER=${{ github.event.pull_request.number }}
             echo "PR_NUMBER: $PR_NUMBER"
             
             # Create a new branch for the main branch, including the PR number
