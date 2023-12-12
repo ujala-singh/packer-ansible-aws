@@ -21,9 +21,9 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
       
       - name: Make Script Executable
-        run: chmod +x scripts/create_master_branch_pr.sh
+        run: chmod +x .github/scripts/create_master_branch_pr.sh
 
       - name: Execute Main Branch PR Script
-        run: ./scripts/create_master_branch_pr.sh
+        run: ./.github/scripts/create_master_branch_pr.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
