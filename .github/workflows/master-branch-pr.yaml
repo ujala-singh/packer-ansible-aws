@@ -24,6 +24,6 @@ jobs:
         run: chmod +x scripts/create_master_branch_pr.sh
 
       - name: Execute Main Branch PR Script
-        run: ./scripts/create_main_branch_pr.sh
+        run: ./scripts/create_master_branch_pr.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
