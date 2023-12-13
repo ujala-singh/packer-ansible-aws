@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         repo: ['ujala-singh/Ubuntu-EC2-Module']
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
