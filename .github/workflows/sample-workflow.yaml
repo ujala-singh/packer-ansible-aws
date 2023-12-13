@@ -11,4 +11,3 @@ jobs:
       - name: Just a simple message
         run: |
           echo "Hello World!"
-          exit 1
