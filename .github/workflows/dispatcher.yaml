@@ -5,6 +5,8 @@ on:
       - "Sample Workflow"
     branches:
       - master
+      - beta
+      - staging
     types:
       - completed
 
