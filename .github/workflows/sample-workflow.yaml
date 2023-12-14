@@ -2,7 +2,8 @@ name: Sample Workflow
  
 on:
   push:
-    branches: [master]
+    branches:
+      - staging
  
 jobs:
   sample-workflow:
