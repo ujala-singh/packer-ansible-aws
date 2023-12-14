@@ -23,7 +23,8 @@ jobs:
       - name: Get branch name
         id: extract_branch
         run: |
-          echo "branch=${{ github.event.workflow_run.head_branch }}"
+          echo "branch=${{ github.event.workflow_run.head_branch }}" >> $GITHUB_OUTPUT
+          echo "$branch"
 
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v2
